@@ -32,13 +32,17 @@ namespace escalonador_aed
         // Checar se a fila está vazia
         public bool FilaVazia()
         {
+
+            mutex.WaitOne();
             if (Anterior == Posterior)
             {
+                mutex.ReleaseMutex();
                 return true;
             }
 
             else
             {
+                mutex.ReleaseMutex();
                 return false;
             }
         }
