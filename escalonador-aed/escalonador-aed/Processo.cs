@@ -14,7 +14,6 @@ namespace escalonador_aed
         public int PID { get; set; }
         public string Nome { get; set; }
         public int Prioridade { get; set; }
-        public double OcupacaoCPU { get; set; }
         public int NumeroCiclos { get; set; }
         public int TempoSobra { get; set; }
         public string Estado { get; set; }
@@ -22,12 +21,11 @@ namespace escalonador_aed
         public Stopwatch TempoEspera { get; set; }
 
         // Construtor
-        public Processo(int PID, string Nome, int Prioridade, double OcupacaoCPU, int NumeroCiclos)
+        public Processo(int PID, string Nome, int Prioridade, int NumeroCiclos)
         {
             this.PID = PID;
             this.Nome = Nome;
             this.Prioridade = Prioridade;
-            this.OcupacaoCPU = OcupacaoCPU;
             this.NumeroCiclos = NumeroCiclos;
             Estado = "PRONTO";
             TempoExecucao = new Stopwatch();
@@ -66,6 +64,7 @@ namespace escalonador_aed
             TempoExecucao.Start();
         }
 
+        // @TODO
         // Questão:
         // O escalonador deve implementar alguma política de promoção ou rebaixamento automáticos de prioridades
         // de processos:
