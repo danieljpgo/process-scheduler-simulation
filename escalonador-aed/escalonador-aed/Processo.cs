@@ -73,7 +73,7 @@ namespace escalonador_aed
         // Regra 2 - Reduz a prioridade caso seja maior que 1
         public int ElevarPrioridade()
         {
-            if (Prioridade < 5)
+            if (Prioridade < 32)
             {
                 Prioridade++;
             }

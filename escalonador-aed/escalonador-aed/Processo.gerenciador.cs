@@ -149,14 +149,14 @@ namespace escalonador_aed
             {
                 Thread.Sleep(TempoMaximoDeEspera); //Thread dorme para não verificar a todo instante
 
-                ProcessoFila[] FilasAux = new ProcessoFila[4]; //fila auxiliar
+                ProcessoFila[] FilasAux = new ProcessoFila[32]; //fila auxiliar
 
                 for (int p = 0; p < FilasAux.Length; p++) //instânciando as filas
                     FilasAux[p] = new ProcessoFila();
 
                 Monitor.Enter(filaProcessos);
 
-                for (int x = 0; x < filaProcessos.Length - 1; x++) //percorre a fila prioridade 1 até a 4
+                for (int x = 0; x < filaProcessos.Length - 1; x++) //percorre a fila prioridade 
                 {
                     int nProcs = filaProcessos[x].ContadorProcesso;  //captura o número de processos na fila
                     int prioridadeFila = x; //define a prioridade
