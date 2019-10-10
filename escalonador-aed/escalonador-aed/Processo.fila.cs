@@ -10,8 +10,8 @@ namespace escalonador_aed
 {
     class ProcessoFila
     {
-        public ProcessoUnidade Anterior { get; set; }
-        public ProcessoUnidade Posterior { get; set; }
+        public ProcessoUnidade Atras { get; set; }
+        public ProcessoUnidade Frente { get; set; }
         public int ContadorProcesso { get; set; }
 
         // @TODO Ajustar aqui
@@ -24,8 +24,8 @@ namespace escalonador_aed
         public ProcessoFila()
         {
             ProcessoUnidade sentinela = new ProcessoUnidade();
-            Anterior = sentinela;
-            Posterior = sentinela;
+            Atras = sentinela;
+            Frente = sentinela;
             ContadorProcesso = 0;
         }
 
@@ -34,7 +34,7 @@ namespace escalonador_aed
         {
 
             mutex.WaitOne();
-            if (Anterior == Posterior)
+            if (Atras == Frente)
             {
                 mutex.ReleaseMutex();
                 return true;
@@ -47,7 +47,59 @@ namespace escalonador_aed
             }
         }
 
-        // Procurar uma Unidade de Processo na fila de Processos (findIndex na mão)
+        // Enfileira um novo processo, ou seja, aloca um processo na ultima posição
+        public void EnfileirarProcesso(Processo processo)
+        {
+            mutex.WaitOne();
+            ProcessoUnidade processoNovo = new ProcessoUnidade(processo);
+
+            // Caso o tempo de espera não esteja acontecendo, será iniciado
+            if (!processoNovo.Processo.TempoEspera.IsRunning)
+            {
+                processoNovo.Processo.TempoEspera.Start();
+            }
+
+            if (FilaVazia())
+            {
+                Frente.Proximo = processoNovo;
+            }
+
+            Atras.Proximo = processoNovo;
+            Atras = processoNovo;
+
+            ContadorProcesso++;
+            mutex.ReleaseMutex();
+        }
+
+        // Desenfileira um processo, ou seja, remove o primeiro da fila
+        public Processo DesenfileirarProcesso()
+        {
+            mutex.WaitOne();
+            if (!FilaVazia())
+            {
+                ProcessoUnidade aux = Frente.Proximo;
+                Frente.Proximo = aux.Proximo;
+
+                aux.Proximo = null;
+
+                if (Frente.Proximo == null)
+                {
+                    Atras = Frente;
+                }
+
+                ContadorProcesso--;
+
+                mutex.ReleaseMutex();
+                return aux.Processo;
+            }
+            else
+            {
+                mutex.ReleaseMutex();
+                return null;
+            }
+        }
+
+        // Procurar uma Unidade de Processo na fila de Processos (findIndex() na mão)
         public Processo ProcuraProcesso(int indice)
         {
             if (!FilaVazia())
@@ -61,7 +113,7 @@ namespace escalonador_aed
                     return null;
                 }
 
-                ProcessoUnidade aux = Posterior.Proximo;
+                ProcessoUnidade aux = Frente.Proximo;
 
                 // Avança o ponteiro até chegar no indice que deseja obter o processo
                 for (int cont = 0; cont < indice; cont++)
@@ -74,5 +126,6 @@ namespace escalonador_aed
             }
             return null;
         }
+
     }
 }
