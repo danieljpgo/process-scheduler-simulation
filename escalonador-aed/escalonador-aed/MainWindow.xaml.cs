@@ -48,7 +48,8 @@ namespace escalonador_aed
         // Refresh interface (atualizar os valores)
         private void AtualizaInterface()
         {
-            while (!ProcessoGerenciador.FilaProcesssoVazia(processoFilas)) //Enquanto houver processos a serem executados
+            // Enquanto houver processos a serem executados
+            while (!ProcessoGerenciador.FilaProcesssoVazia(processoFilas)) 
             {
                 try
                 {
@@ -58,22 +59,30 @@ namespace escalonador_aed
                         numThreadExibe = ComboBoxThreadExibicao.SelectedIndex;
                     }));
 
-                    AtualizarValores(numThreadExibe);//Tabela é atualizada
-                    Thread.Sleep(tempoRefreshInterface);//Thread dorme por tempo determinado pelo usuario
+                    // Tabela é atualizada
+                    AtualizarValores(numThreadExibe);
+
+                    // Thread dorme por tempo determinado pelo usuario
+                    Thread.Sleep(tempoRefreshInterface);
                 }
 
-                catch (TaskCanceledException) //exceção disparada quando tentam finalizar o programa antes das tarefas serem concluidas
+                // Exceção disparada quando tentam finalizar o programa antes das tarefas serem concluidas
+                catch (TaskCanceledException) 
                 {
-                    return; //finaliza a thread
+                    // finaliza a thread
+                    return;
                 }
             }
 
             Dispatcher.Invoke(
                 new Action(() =>
                 {
-                    DataGridGerenciador.Items.Clear();//Limpa a tela para remover os processos que restaram no DataGrid
+                    // Limpa a tela para remover os processos que restaram no DataGrid
+                    DataGridGerenciador.Items.Clear();
                     MessageBox.Show("Todos os processos foram concluídos ", TotalProcessosConcluidos().ToString(), MessageBoxButton.OK, MessageBoxImage.Information);
-                    AtualizarControles(true);//libera e limpa todos os controles
+
+                    // libera e limpa todos os controles
+                    AtualizarControles(true);
 
                     LabelNomeProcesso.Content = "";
                     LabelPID.Content = "";
@@ -84,26 +93,29 @@ namespace escalonador_aed
                 }));
         }
 
-        //Método que instancia todas as filas de todas as prioridades
+        // Método que instancia todas as filas de todas as prioridades
         private void InstanciarFilas()
         {
             for (int i = 0; i < processoFilas.Length; i++)
                 processoFilas[i] = new ProcessoFila();
         }
 
-        //Evento de click do botão de iniciar a simulação
+        // Evento de click do botão de iniciar a simulação
         private void BtnIniciaSimulacao_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                //captura os valores dados pelo usuario
+                // captura os valores dados pelo usuario
                 int q = int.Parse(TxtQuantum.Text);
-                int threads = (Convert.ToInt32(ComboBoxNumeroThreads.SelectedIndex + 1)); //número de threads
-                tempoRefreshInterface = int.Parse(TxtTempoInterface.Text); //tempo de atualização da interface
-                int tempoVerificacao = int.Parse(TxtTempoVerif.Text); //tempo de verificação de execução
-                int tempoEspera = int.Parse(TxtTempoEspera.Text); //tempo máximo de espera antes de subir a prioridade
+                // número de threads
+                int threads = (Convert.ToInt32(ComboBoxNumeroThreads.SelectedIndex + 1)); 
+                // Tempo de atualização da interface
+                tempoRefreshInterface = int.Parse(TxtTempoInterface.Text);
+                //tempo de verificação de execução
+                int tempoVerificacao = int.Parse(TxtTempoVerif.Text);
+                //tempo máximo de espera antes de subir a prioridade
+                int tempoEspera = int.Parse(TxtTempoEspera.Text);
                 totalProcesso = 0;
-
                 //Tratamento de erros
                 if (q <= 0)
                 {
@@ -126,21 +138,22 @@ namespace escalonador_aed
                 }
 
 
-                //bloco executado quando não há erros
-                else //sem erros de números inferiores a 0
+                // Bloco executado quando não há erros
+                // Sem erros de números inferiores a 0
+                else
                 {
-                    //declarando tamanho dos vetores de threads e gerenciadores de processos
+                    // Declarando tamanho dos vetores de threads e gerenciadores de processos
                     gerenciadorProcessos = new ProcessoGerenciador[threads];
                     ThreadsExecucao = new Thread[threads];
 
-                    //preenche as filas com os processos necessários
+                    // Preenche as filas com os processos necessários
                     gerador.PreencherFilaDeProcessos(processoFilas);
 
-                    //loop para descobrir quantos processos necessitam de serem executados
+                    // Loop para descobrir quantos processos necessitam de serem executados
                     foreach (ProcessoFila fila in processoFilas)
                         totalProcesso += fila.ContadorProcesso;
 
-                    //instanciando todos os gerenciadores de processo
+                    // Instanciando todos os gerenciadores de processo
                     for (int ax = 0; ax < threads; ax++)
                     {
                         gerenciadorProcessos[ax] = new ProcessoGerenciador(q, tempoVerificacao);
@@ -148,7 +161,7 @@ namespace escalonador_aed
 
                     int a = 0;
 
-                    //inicia as threads de execução
+                    // Inicia as threads de execução
                     foreach (ProcessoGerenciador g in gerenciadorProcessos)
                     {
                         ThreadsExecucao[a] = new Thread(() => g.ExecutarProcesso(processoFilas));
@@ -161,7 +174,7 @@ namespace escalonador_aed
 
                     ThreadInterface = new Thread(AtualizaInterface);
 
-                    //Adiciona items no ComboBox de Threads, de acordo com o numero de Threads que o usuario solicitar
+                    // Adiciona items no ComboBox de Threads, de acordo com o numero de Threads que o usuario solicitar
                     for (int ab = 0; ab < threads; ab++)
                         ComboBoxThreadExibicao.Items.Add(ab + 1);
 
@@ -177,8 +190,8 @@ namespace escalonador_aed
             }
         }
 
-        //Atualiza os controles de acordo com a necessidade
-        //Desabilita botões e caixas de textos, para impedir que o usuário use comandos em momentos inapropriados
+        // Atualiza os controles de acordo com a necessidade
+        // Desabilita botões e caixas de textos, para impedir que o usuário use comandos em momentos inapropriados
         private void AtualizarControles(bool valor)
         {
             BtnIniciaSimulacao.IsEnabled = valor;
@@ -188,11 +201,10 @@ namespace escalonador_aed
             ComboBoxNumeroThreads.IsEnabled = valor;
             TxtTempoEspera.IsEnabled = valor;
             ComboBoxThreadExibicao.IsEnabled = !valor;
-            BtnPausar.IsEnabled = !valor;
             Btn_Interromper.IsEnabled = !valor;
 
-            //Se o boleano for verdadeiro, significa que os botões estão sendo ligados novamente
-            //Portanto, as caixas precisam ser limpas
+            // Se o boleano for verdadeiro, significa que os botões estão sendo ligados novamente
+            // Portanto, as caixas precisam ser limpas
             if (valor)
             {
                 ComboBoxThreadExibicao.Items.Clear();
@@ -208,7 +220,7 @@ namespace escalonador_aed
             return total;
         }
 
-        //Atualiza os valores da tela
+        // Atualiza os valores da tela
         private void AtualizarValores(int indice)
         {
             Dispatcher.Invoke(
@@ -239,18 +251,19 @@ namespace escalonador_aed
 
         private void InterromperThreads()
         {
-            //Finaliza todas as threads para permitir a finalização do programa sem problemas
+            // Finaliza todas as threads para permitir a finalização do programa sem problemas
             if (ThreadsExecucao != null)
             {
                 foreach (Thread t in ThreadsExecucao)
                 {
                     try
                     {
-                        if (t.ThreadState.ToString() == "Suspended") //se a thread estiver suspensa
-                            t.Resume();//resume a thread
+                        //se a thread estiver suspensa
+                        if (t.ThreadState.ToString() == "Suspended")
+                            t.Resume();
 
                         if (t != null)
-                            t.Abort();//aborta a thread
+                            t.Abort();
                     }
 
                     catch (ThreadStateException ex)
@@ -293,55 +306,14 @@ namespace escalonador_aed
             InterromperThreads();
         }
 
-        private void BtnPausar_Click(object sender, RoutedEventArgs e)
-        {
-            for (int i = 0; i < gerenciadorProcessos.Length; i++)
-            {
-                ThreadsExecucao[i].Suspend();//suspende a thread de execução
-                gerenciadorProcessos[i].ProcessoSendoExecutado.TempoExecucao.Stop();
-            }
-
-            foreach (ProcessoFila f in processoFilas)
-            {
-                for (int i = 0; i < f.ContadorProcesso; i++)
-                    f.ProcuraProcesso(i).TempoEspera.Stop();
-            }
-
-            ContPrioridadeEspera.Suspend();
-
-            BtnPausar.IsEnabled = false;
-            BtnResumir.IsEnabled = true;
-        }
-
-        private void BtnResumir_Click(object sender, RoutedEventArgs e)
-        {
-            Monitor.Enter(processoFilas);
-            for (int i = 0; i < gerenciadorProcessos.Length; i++)
-            {
-                ThreadsExecucao[i].Resume();
-                gerenciadorProcessos[i].ProcessoSendoExecutado.TempoExecucao.Start();
-            }
-
-            foreach (ProcessoFila f in processoFilas)
-            {
-                for (int i = 0; i < f.ContadorProcesso; i++)
-                    f.ProcuraProcesso(i).TempoEspera.Start();
-            }
-
-            ContPrioridadeEspera.Resume();
-
-            BtnPausar.IsEnabled = true;
-            BtnResumir.IsEnabled = false;
-            Btn_Interromper.IsEnabled = true;
-            Monitor.Exit(processoFilas);
-        }
-
         private void Btn_Interromper_Click(object sender, RoutedEventArgs e)
         {
-            InterromperThreads();//interrompe todas as threads
-            DataGridGerenciador.Items.Clear(); //limpa o grid de processos
-            AtualizarControles(true);//atualiza os controles
-            InstanciarFilas();//reseta todas as filas
+            //interrompe todas as threads
+            InterromperThreads();            
+            DataGridGerenciador.Items.Clear();
+            //limpa o grid de processos
+            AtualizarControles(true);
+            InstanciarFilas();
             //limpa todos os labels
             LabelNomeProcesso.Content = "";
             LabelPID.Content = "";

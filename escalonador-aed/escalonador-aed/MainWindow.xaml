@@ -32,7 +32,7 @@
             </DataGrid.Columns>
 
         </DataGrid>
-        <TextBox x:Name="TxtQuantum" HorizontalAlignment="Left" Height="23" Margin="85,12,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="58" MaxLines="1" MinLines="1" IsUndoEnabled="True" AutomationProperties.IsRequiredForForm="False" RenderTransformOrigin="1.155,0.63" Text="15000" UndoLimit="10000"/>
+        <TextBox x:Name="TxtQuantum" IsEnabled="False" HorizontalAlignment="Left" Height="23" Margin="85,12,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="58" MaxLines="1" MinLines="1" IsUndoEnabled="True" AutomationProperties.IsRequiredForForm="False" RenderTransformOrigin="1.155,0.63" Text="15000" UndoLimit="10000"/>
         <Label Content="Quantum:" HorizontalAlignment="Left" Margin="17,12,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.567,-1.346" ToolTip="É o quantum "/>
         <Button x:Name="BtnIniciaSimulacao" Content="Simular" HorizontalAlignment="Left" Margin="346,62,0,0" VerticalAlignment="Top" Width="200" Height="30" Click="BtnIniciaSimulacao_Click" />
         <Label Content="Número de threads: " HorizontalAlignment="Left" Margin="364,12,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.711,0.808"/>
@@ -44,7 +44,7 @@
         <Label x:Name="LabelPrioridade" Content="Label" HorizontalAlignment="Left" Margin="92,258,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.066,0.558"/>
         <Label Content="Tempo máximo de execução:" HorizontalAlignment="Left" Margin="19,51,0,0" VerticalAlignment="Top" ToolTip="Indica o tempo máximo de execução de um processo até que ele seja interrompido e tenha sua prioridade reduzida."/>
         <Label Content="Thread a exibir os dados de execução: " HorizontalAlignment="Left" Margin="19,188,0,0" VerticalAlignment="Top" ToolTip="Selecione o índice da thread que você deseja ver os dados."/>
-        <TextBox x:Name="TxtTempoVerif" HorizontalAlignment="Left" Height="25" Margin="233,52,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="58" MaxLines="1" Text="150"/>
+        <TextBox x:Name="TxtTempoVerif" IsEnabled="False" HorizontalAlignment="Left" Height="25" Margin="233,52,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="58" MaxLines="1" Text="150"/>
         <Label Content="Tempo em execução: " HorizontalAlignment="Left" Margin="296,258,0,0" VerticalAlignment="Top"/>
         <Label Content="Tempo de atualização da interface:" HorizontalAlignment="Left" Margin="19,143,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" ToolTip="Tempo recomendado: acima de 100ms. Valores inferiores podem gerar travamentos."/>
         <ComboBox x:Name="ComboBoxThreadExibicao" HorizontalAlignment="Left" Margin="233,188,0,0" VerticalAlignment="Top" Width="58" Height="26" RenderTransformOrigin="0.047,1.769" IsEnabled="False"/>
@@ -59,14 +59,12 @@
         <Label Content="ms" HorizontalAlignment="Left" Margin="296,51,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.62,0"/>
         <TextBox x:Name="TxtTempoInterface" HorizontalAlignment="Left" Height="27" Margin="233,143,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="58" Text="100"/>
         <Label Content="ms" HorizontalAlignment="Left" VerticalAlignment="Top" RenderTransformOrigin="1.697,1.077" Margin="296,144,0,0"/>
-        <Button x:Name="BtnPausar" Content="Pausar" HorizontalAlignment="Left" VerticalAlignment="Top" Width="200" Margin="346,97,0,0" Click="BtnPausar_Click" Height="31" IsEnabled="False"/>
-        <Button x:Name="BtnResumir" Content="Resumir" HorizontalAlignment="Left" Margin="346,133,0,0" VerticalAlignment="Top" Width="200" Height="30" IsEnabled="False" Click="BtnResumir_Click"/>
         <Label Content="Ciclos restantes:" HorizontalAlignment="Left" Margin="25,292,0,0" VerticalAlignment="Top"/>
         <Label x:Name="LabelCiclco" Content="Label" HorizontalAlignment="Left" Margin="120,292,0,0" VerticalAlignment="Top" RenderTransformOrigin="-6.908,2.058"/>
         <Label Content="Tempo máximo de espera:" HorizontalAlignment="Left" Margin="19,99,0,0" VerticalAlignment="Top" ToolTip="Indica o tempo máximo que um processo espera até aumentar sua prioridade."/>
-        <TextBox x:Name="TxtTempoEspera" HorizontalAlignment="Left" Height="25" Margin="233,99,0,0" TextWrapping="Wrap" Text="150000" VerticalAlignment="Top" Width="58"/>
+        <TextBox x:Name="TxtTempoEspera" IsEnabled="False" HorizontalAlignment="Left" Height="25" Margin="233,99,0,0" TextWrapping="Wrap" Text="150000" VerticalAlignment="Top" Width="58"/>
         <Label Content="ms" HorizontalAlignment="Left" Margin="296,99,0,0" VerticalAlignment="Top"/>
-        <Button x:Name="Btn_Interromper" Content="Parar" HorizontalAlignment="Left" Margin="346,168,0,0" VerticalAlignment="Top" Width="200" Click="Btn_Interromper_Click" Height="30" IsEnabled="False"/>
+        <Button x:Name="Btn_Interromper" Content="Parar" HorizontalAlignment="Left" Margin="346,99,0,0" VerticalAlignment="Top" Width="200" Click="Btn_Interromper_Click" Height="30" IsEnabled="False"/>
 
     </Grid>
 </Window>

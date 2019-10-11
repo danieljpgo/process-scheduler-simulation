@@ -32,10 +32,6 @@ namespace escalonador_aed
             TempoEspera = new Stopwatch();
         }
 
-        // Questão: 
-        // Fazer com que um processo tenha sua prioridade alterada em meio à sua execução automaticamente,
-        // gerando perda ou ganho de prioridade dado ao tempo de execução ou espera.
-
         // Quando um ciclo é completado (processamento), o numero de ciclos é reduzido em 1,
         // o tempo de execução é resetado e o tempo de sobra é zerado para controle
         public void CicloCompleto()
@@ -64,13 +60,8 @@ namespace escalonador_aed
             TempoExecucao.Start();
         }
 
-        // @TODO
-        // Questão:
-        // O escalonador deve implementar alguma política de promoção ou rebaixamento automáticos de prioridades
-        // de processos:
-
-        // Regra 1 - Eleva a prioridade caso seja menor do que 5
-        // Regra 2 - Reduz a prioridade caso seja maior que 1
+        // Eleva a prioridade caso seja menor do que 32
+        // Reduz a prioridade caso seja maior que 1
         public int ElevarPrioridade()
         {
             if (Prioridade < 32)

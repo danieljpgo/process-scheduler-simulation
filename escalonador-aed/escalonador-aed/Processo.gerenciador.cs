@@ -76,22 +76,27 @@ namespace escalonador_aed
 
         private void SimularExecucao(ProcessoFila[] F, int prioridadeDaFila)
         {
-            if (!F[prioridadeDaFila].FilaVazia()) //Se a fila não está vazia
+            // Se a fila não está vazia
+            if (!F[prioridadeDaFila].FilaVazia()) 
             {
-                ProcessoSendoExecutado = F[prioridadeDaFila].DesenfileirarProcesso();  //captura o processo a ser executado
+                // Captura o processo a ser executado
+                ProcessoSendoExecutado = F[prioridadeDaFila].DesenfileirarProcesso();
 
-                if (ProcessoSendoExecutado == null)// se o processo é null, houve erro na execução e finaliza por aqui
+                // Se o processo é null, houve erro na execução e finaliza por aqui
+                if (ProcessoSendoExecutado == null)
                     return;
 
-                // @TODO 
                 double tempoReservadoProcessadorD = 0.01 * Quantum;
-                int tempoReservadoProcessador = Convert.ToInt32(tempoReservadoProcessadorD); //calcula o tempo a thread irá dormir para simular a execução do processo
+
+                // Calcula o tempo a thread irá dormir para simular a execução do processo
+                int tempoReservadoProcessador = Convert.ToInt32(tempoReservadoProcessadorD);
                 int tempoJaUsado = 0;
 
                 ProcessoSendoExecutado.IniciaCiclo();  //inicia a contagem de tempo do processo
 
-                //Ciclos podem ser partidos
-                if (ProcessoSendoExecutado.TempoSobra > 0) //se o tempo de sobra(processo não conseguiu completar o ciclo anteriormente, o que gera tempo de sobra de um ciclo anterior)
+                // Ciclos podem ser partidos
+                // se o tempo de sobra(processo não conseguiu completar o ciclo anteriormente, o que gera tempo de sobra de um ciclo anterior)
+                if (ProcessoSendoExecutado.TempoSobra > 0)
                 {
                     if (ProcessoSendoExecutado.TempoSobra > TempoMaxExecucao)
                     {
@@ -100,24 +105,32 @@ namespace escalonador_aed
                         tempoReservadoProcessador = 0;
                     }
 
-                    else //executa o resto do ciclo do processo
+                    // Executa o resto do ciclo do processo
+                    else
                     {
                         Thread.Sleep(ProcessoSendoExecutado.TempoSobra);
                         tempoReservadoProcessador -= ProcessoSendoExecutado.TempoSobra;
                         tempoJaUsado = ProcessoSendoExecutado.TempoSobra;
-                        ProcessoSendoExecutado.NumeroCiclos--; //Ciclo completo
+
+                        // Ciclo completo
+                        ProcessoSendoExecutado.NumeroCiclos--;
                         ProcessoSendoExecutado.TempoSobra = 0;
                     }
                 }
 
-                if (tempoReservadoProcessador >= TempoMaxExecucao) //se o tempo de execução for superior ao máximo tempo de execução
+                // Se o tempo de execução for superior ao máximo tempo de execução
+                if (tempoReservadoProcessador >= TempoMaxExecucao)
                 {
-                    Thread.Sleep(TempoMaxExecucao); //Coloca a thread para dormir
-                    prioridadeDaFila = ProcessoSendoExecutado.ReduzirPrioridade() - 1; //reduz a prioridade do processo e seta o índice da fila de prioridade desejada  
+                    // Coloca a thread para dormir
+                    Thread.Sleep(TempoMaxExecucao);
+
+                    // Reduz a prioridade do processo e seta o índice da fila de prioridade desejada  
+                    prioridadeDaFila = ProcessoSendoExecutado.ReduzirPrioridade() - 1;
                     ProcessoSendoExecutado.TempoSobra = tempoReservadoProcessador - TempoMaxExecucao;
                 }
 
-                else //executa o tempo reservado de Quantum reservado pelo processo
+                // Executa o tempo reservado de Quantum reservado pelo processo
+                else
                 {
                     int tempoRestante = tempoReservadoProcessador - tempoJaUsado;
 
@@ -128,11 +141,14 @@ namespace escalonador_aed
                     }
                 }
 
-                ProcessoSendoExecutado.CicloCompleto(); //Finaliza a contagem de tempo do processo em execução
+                // Finaliza a contagem de tempo do processo em execução
+                ProcessoSendoExecutado.CicloCompleto();
 
-                if (ProcessoSendoExecutado.NumeroCiclos > 0) //Existem ciclos a serem executados?
+                // Existem ciclos a serem executados?
+                if (ProcessoSendoExecutado.NumeroCiclos > 0)
                 {
-                    F[prioridadeDaFila].EnfileirarProcesso(ProcessoSendoExecutado);//Se existem, ele insere o processo de volta na fila de espera, na ultima posição
+                    // Se existem, ele insere o processo de volta na fila de espera, na ultima posição
+                    F[prioridadeDaFila].EnfileirarProcesso(ProcessoSendoExecutado);
                 }
 
                 else
@@ -147,40 +163,55 @@ namespace escalonador_aed
         {
             while (true)
             {
-                Thread.Sleep(TempoMaximoDeEspera); //Thread dorme para não verificar a todo instante
+                // Thread dorme para não verificar a todo instante
+                Thread.Sleep(TempoMaximoDeEspera);
 
-                ProcessoFila[] FilasAux = new ProcessoFila[32]; //fila auxiliar
+                // Fila auxiliar
+                ProcessoFila[] FilasAux = new ProcessoFila[32];
 
-                for (int p = 0; p < FilasAux.Length; p++) //instânciando as filas
+                // Instânciando as filas
+                for (int p = 0; p < FilasAux.Length; p++)
                     FilasAux[p] = new ProcessoFila();
 
                 Monitor.Enter(filaProcessos);
 
-                for (int x = 0; x < filaProcessos.Length - 1; x++) //percorre a fila prioridade 
+                // Percorre a fila prioridade 
+                for (int x = 0; x < filaProcessos.Length - 1; x++)
                 {
-                    int nProcs = filaProcessos[x].ContadorProcesso;  //captura o número de processos na fila
-                    int prioridadeFila = x; //define a prioridade
+                    // Captura o número de processos na fila
+                    int nProcs = filaProcessos[x].ContadorProcesso;
+
+                    // Define a prioridade
+                    int prioridadeFila = x;
 
                     for (int u = 0; u < nProcs; u++)
                     {
-                        Processo processoEmAnalise = filaProcessos[prioridadeFila].DesenfileirarProcesso(); //retira o processo da fila
+                        // Retira o processo da fila
+                        Processo processoEmAnalise = filaProcessos[prioridadeFila].DesenfileirarProcesso();
 
-                        if (processoEmAnalise.TempoEspera.ElapsedMilliseconds > TempoMaximoDeEspera) //verifica necessidade de subir prioridade
+                        // Verifica necessidade de subir prioridade
+                        if (processoEmAnalise.TempoEspera.ElapsedMilliseconds > TempoMaximoDeEspera)
                         {
-                            prioridadeFila = processoEmAnalise.ElevarPrioridade() - 1; //eleva a prioridade do processo e altera o valor da variavel prioridade
-                            FilasAux[prioridadeFila - 1].EnfileirarProcesso(processoEmAnalise); //coloca o processo na fila auxiliar
+                            // Eleva a prioridade do processo e altera o valor da variavel prioridade
+                            prioridadeFila = processoEmAnalise.ElevarPrioridade() - 1;
+                            // Coloca o processo na fila auxiliar
+                            FilasAux[prioridadeFila - 1].EnfileirarProcesso(processoEmAnalise); 
                         }
 
                         else
                         {
-                            filaProcessos[prioridadeFila].EnfileirarProcesso(processoEmAnalise); //coloca o processo de volta na mesma fila
+                            // Coloca o processo de volta na mesma fila
+                            filaProcessos[prioridadeFila].EnfileirarProcesso(processoEmAnalise);
                         }
 
-                        prioridadeFila = x; //altera o valor da prioridade para evitar bugs
+                        // Altera o valor da prioridade para evitar bugs
+                        prioridadeFila = x;
                     }
                 }
 
-                for (int i = 1; i < filaProcessos.Length; i++) //percorre as filas para adicionar os processos em suas devidas filas
+                // Percorre as filas para adicionar os processos em suas devidas filas
+
+                for (int i = 1; i < filaProcessos.Length; i++)
                 {
                     while (!FilasAux[i - 1].FilaVazia())
                         filaProcessos[i].EnfileirarProcesso(FilasAux[i - 1].DesenfileirarProcesso());

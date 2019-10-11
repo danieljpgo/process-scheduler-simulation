@@ -46,13 +46,17 @@ namespace escalonador_aed
 
         public void PreencherFilaDeProcessos(ProcessoFila[] f)
         {
-            if (File.Exists(nomeArquivo)) //verifica se o arquivo existe
+            // Verifica se o arquivo existe
+            if (File.Exists(nomeArquivo))
             {
-                reader = new StreamReader(nomeArquivo); //instância o objeto
+                // Instância o objeto
+                reader = new StreamReader(nomeArquivo);
 
-                while (!reader.EndOfStream) //enquanto o arquivo não tiver sido lido completamente
+                // Enquanto o arquivo não tiver sido lido completamente
+                while (!reader.EndOfStream)
                 {
-                    Processo processo = MontaNovoProcesso(); //no método MontaNovoProcesso ocorre a leitura do arquivo e montagem do processo
+                    // No método MontaNovoProcesso ocorre a leitura do arquivo e montagem do processo
+                    Processo processo = MontaNovoProcesso();
                     int prioridade = processo.Prioridade;
 
                     try
